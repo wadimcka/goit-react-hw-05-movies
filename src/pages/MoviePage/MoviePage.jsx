@@ -1,5 +1,6 @@
-// import { getMovie } from 'api/api';
-// import React, { useEffect, useState } from 'react';
+import { fetchMovie } from 'api/api';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const MoviePage = () => {
   // const [moviId, setMoviId] = useState(null);
@@ -9,18 +10,19 @@ const MoviePage = () => {
   // useEffect(() => {
   //   setError(null);
   //   setIsLoading(true);
-  //   try {
-  //     const fetchMovie = async movieId => {
-  //       const {data} = await getMovie(movieId);
-  //     };
-  //     fetchMovie(moviId);
-  //   } catch (error) {
-  //     setError(error.massage);
-  //     console.error(error.massage);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  //    fetchMovie();
+  //   const getMovie = async () => {
+  //     try {
+  //       const data = await fetchMovie();
+  //       // setMoviId(moviId);
+  //       console.log('fetchMovie', data);
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.warn(error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   getMovie();
   // }, []);
 
   return <div>MoviePage</div>;

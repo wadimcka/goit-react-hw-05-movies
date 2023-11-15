@@ -8,15 +8,32 @@ axios.defaults.params = {
 export const fetchHomeMovList = async () => {
   const response = await axios.get('trending/all/day');
   const { data } = response;
-  console.log(data);
   if (response.status < 200 || response.status >= 300) {
     throw new Error('Data failed to load. Status: ' + response.status);
   }
   return data.results;
 };
 
-export const getMovie = async movieId => {
+export const fetchMovieDetail = async movieId => {
   const response = await axios.get(`movie/${movieId}`);
+  const { data } = response;
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error('Data failed to load. Status: ' + response.status);
+  }
+  return data;
+};
+
+export const fetchCast = async movieId => {
+  const response = await axios.get(`movie/${movieId}/credits`);
+  const { data } = response;
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error('Data failed to load. Status: ' + response.status);
+  }
+  return data.cast;
+};
+
+export const fetchReviews = async movieId => {
+  const response = await axios.get(`movie/${movieId}/reviews`);
   const { data } = response;
   if (response.status < 200 || response.status >= 300) {
     throw new Error('Data failed to load. Status: ' + response.status);

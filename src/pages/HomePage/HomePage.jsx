@@ -1,11 +1,13 @@
 import { fetchHomeMovList } from 'api/api';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const Home = () => {
+const HomePage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [homeMovList, setHomeMovList] = useState([]);
+  const defaultImg = '/public/nophoto.jpg';
 
   useEffect(() => {
     setError(null);
@@ -13,12 +15,11 @@ const Home = () => {
     const fechData = async () => {
       try {
         const data = await fetchHomeMovList();
-
         setHomeMovList(data);
         console.log(data);
       } catch (error) {
-        setError(error);
-        toast.warn(error.message);
+        setError(error.message);
+        toast.warn(error);
       } finally {
         setIsLoading(false);
       }
@@ -28,21 +29,23 @@ const Home = () => {
 
   return (
     <div>
+      {error !== null && toast.error(error)}
       {isLoading && <p>Loading...</p>}
       <ul>
         {homeMovList.map(({ id, poster_path, title }) => {
           return (
             <li key={id}>
-              <img
-                simg
-                src={
-                  poster_path
-                    ? `https://image.tmdb.org/t/p/w400/${poster_path}`
-                    : 'NO FOTO'
-                }
-                alt={title}
-              />
-              <p>{title}</p>
+              <Link to={`/movies/${id}`}>
+                <img
+                  src={
+                    poster_path
+                      ? `https://image.tmdb.org/t/p/w400/${poster_path}`
+                      : '/public/nophoto.jpg'
+                  }
+                  alt={title}
+                />
+                <p>{title}</p>
+              </Link>
             </li>
           );
         })}
@@ -51,4 +54,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

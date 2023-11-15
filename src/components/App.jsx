@@ -1,19 +1,24 @@
-import Home from 'pages/HomePage/HomePage';
-import MoviePage from 'pages/MoviePage/MoviePage';
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import HomePage from 'pages/HomePage/HomePage';
+import MovieDetailsPage from 'pages/MovieDetailsPage/MovieDetailsPage';
+import MoviePage from 'pages/MoviePage/MoviePage';
+import SharedLayout from './SharedLayout/SharedLayout ';
+import Cast from './Cast/Cast';
+import Reviews from './Reviews/Reviews';
 
 export const App = () => {
   return (
     <div>
-      <nav>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/movies">Movies</NavLink>
-      </nav>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movies" element={<div>Фільм</div>} />
-        <Route path="/movies/:movieId" element={<MoviePage />} />
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="movies/" element={<MoviePage />} />
+          <Route path="movies/:movieId" element={<MovieDetailsPage />}>
+            <Route path="cast" element={<Cast />} />
+            <Route path="reviews" element={<Reviews />} />
+          </Route>
+        </Route>
       </Routes>
       <ToastContainer
         position="top-right"
