@@ -1,55 +1,45 @@
-import { fetchHomeMovList } from 'api/api';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import MovisList from 'components/MovisList/MovisList';
+import { fetchHomeMovList } from 'api/api';
+import { Loader } from 'components/Loader/Loader';
 
 const HomePage = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [homeMovList, setHomeMovList] = useState([]);
-  const defaultImg = '/public/nophoto.jpg';
+  const [movieListData, setMovieListData] = useState([]);
 
   useEffect(() => {
-    setError(null);
-    setIsLoading(true);
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
     const fechData = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const data = await fetchHomeMovList();
-        setHomeMovList(data);
-        console.log(data);
+        const data = await fetchHomeMovList({ signal });
+        setMovieListData(data);
+        if (data.length === 0) {
+          toast.warn('No data found for your request');
+        }
       } catch (error) {
         setError(error.message);
-        toast.warn(error);
+        toast.warn(error.message);
       } finally {
         setIsLoading(false);
       }
     };
     fechData();
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   return (
     <div>
-      {error !== null && toast.error(error)}
-      {isLoading && <p>Loading...</p>}
-      <ul>
-        {homeMovList.map(({ id, poster_path, title }) => {
-          return (
-            <li key={id}>
-              <Link to={`/movies/${id}`}>
-                <img
-                  src={
-                    poster_path
-                      ? `https://image.tmdb.org/t/p/w400/${poster_path}`
-                      : '/public/nophoto.jpg'
-                  }
-                  alt={title}
-                />
-                <p>{title}</p>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {error !== null && error(error)}
+      {isLoading && <Loader />}
+      <MovisList movieListData={movieListData} />
     </div>
   );
 };

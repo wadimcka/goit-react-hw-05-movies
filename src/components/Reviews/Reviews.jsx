@@ -9,25 +9,39 @@ const Reviews = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { movieId } = useParams();
-  const defaultImg =
-    '<https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700>';
-  // const defaultImg = "/public/nophoto.jpg"
+  const defaultImg = 'https://fakeimg.pl/200x300';
 
   useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
     if (!movieId) return;
-    setIsLoading(true);
-    setError(null);
+
     const getReviews = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const data = await fetchReviews(movieId);
+        const data = await fetchReviews(movieId, { signal });
         setMovieReviews(data);
-        console.log(data);
+        if (data.length === 0) {
+          toast.warn('No data found for your request');
+        }
       } catch (error) {
-        setError(error);
-        toast.warn(error.message);
+        if (error.name === 'AbortError') {
+          console.log('Request was aborted');
+        } else {
+          setError(error);
+          toast.warn(error.message);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
     getReviews();
+
+    return () => {
+      abortController.abort();
+    };
   }, [movieId]);
 
   return (
@@ -41,11 +55,11 @@ const Reviews = () => {
               <li key={id}>
                 <img
                   src={
-                    author_details
-                      ? `https://image.tmdb.org/t/p/w500/${author_details.avatar_path}`
+                    author_details && author_details.avatar_path
+                      ? `https://image.tmdb.org/t/p/w200/${author_details.avatar_path}`
                       : defaultImg
                   }
-                  width={250}
+                  width={200}
                   alt="Card"
                 />
                 <h3>{author}</h3>
