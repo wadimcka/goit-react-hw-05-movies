@@ -3,29 +3,25 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Container, SearchBtn } from './SearchForm.styled';
 
-const SearchForm = ({ onSubmit }) => {
+const SearchForm = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [, setSearchParams] = useSearchParams();
 
   const handlInputChange = event => {
-    const query = event.target.value;
-    if (!query || query === '') {
-      setSearchParams({});
-      setSearchQuery('');
-      return;
-    }
-    setSearchParams({ searchQuery: query });
     setSearchQuery(event.target.value.trim());
   };
 
   const handlerFormSubmit = event => {
+    const query = searchQuery;
+    console.log(query);
     event.preventDefault();
     if (!searchQuery) {
       toast.warn('Nothing was found for your request! Try again.');
       return;
     }
+    setSearchParams({ searchQuery: query });
     setSearchQuery('');
-    onSubmit(searchQuery);
+    console.log(query);
   };
 
   return (

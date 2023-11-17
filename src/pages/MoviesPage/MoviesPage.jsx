@@ -13,13 +13,11 @@ const MoviesPage = () => {
   const [searchMoviesData, setSearchMoviesData] = useState([]);
   const [searchParams] = useSearchParams();
 
-  const handleSearchSubmit = inputValue => {
-    setmovieQuery(inputValue);
-  };
-
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
+    setmovieQuery(searchParams.get('searchQuery'));
+    console.log(movieQuery);
 
     if (!movieQuery) {
       return;
@@ -51,19 +49,11 @@ const MoviesPage = () => {
     return () => {
       abortController.abort();
     };
-  }, [movieQuery]);
-
-  useEffect(() => {
-    const urlParam = searchParams.get('searchQuery');
-
-    if (urlParam && !movieQuery) {
-      setmovieQuery(urlParam);
-    }
-  }, [searchParams, movieQuery]);
+  }, [movieQuery, searchParams]);
 
   return (
     <div>
-      <SearchForm onSubmit={handleSearchSubmit} />
+      <SearchForm />
       {error !== null && toast.error(error)}
       {isLoading && <Loader />}
       <MovisList movieListData={searchMoviesData} />
